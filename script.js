@@ -106,9 +106,10 @@ function initTypingAnimation() {
     const typingElement = document.getElementById('typing-text');
     const roles = [
         'Full Stack Developer',
-        'UI/UX Designer',
+        'Software Engineer',
         'Problem Solver',
-        'Creative Thinker'
+        'Tech Enthusiast',
+        
     ];
     
     let roleIndex = 0;

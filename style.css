@@ -285,12 +285,13 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  padding-bottom: var(--spacing-sm);
   margin-bottom: var(--spacing-sm);
 }
 
 .role {
   display: block;
-  color: var(--accent-color);
+  color: var(--text-secondary);
   font-size: var(--font-size-2xl);
   min-height: 1.5em;
 }
@@ -765,6 +766,22 @@ section {
   background: var(--primary-color);
   color: white;
   transform: translateY(-2px);
+}
+
+#linkedin:hover{
+  background: #0A66C2;
+}
+
+#github:hover{
+  background: #171515;
+}
+
+#whatsapp:hover{
+  background: #25D366;
+}
+
+#instagram:hover{
+  background: #E1306C;
 }
 
 /* Contact Form */
