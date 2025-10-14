@@ -209,46 +209,151 @@ function initCounterAnimations() {
 }
 
 // Contact form functionality
+
+// function initContactForm() {
+//     const contactForm = document.getElementById('contact-form');
+    
+//     contactForm.addEventListener('submit', async (e) => {
+//         e.preventDefault();
+        
+//         const submitBtn = contactForm.querySelector('button[type="submit"]');
+//         const btnText = submitBtn.querySelector('.btn-text');
+//         const btnIcon = submitBtn.querySelector('i');
+        
+//         // Show loading state
+//         submitBtn.classList.add('loading');
+//         btnText.textContent = 'Sending...';
+//         btnIcon.className = 'fas fa-spinner fa-spin';
+        
+//         // Simulate form submission (replace with actual form handling)
+//         try {
+//             await simulateFormSubmission();
+            
+//             // Success state
+//             btnText.textContent = 'Message Sent!';
+//             btnIcon.className = 'fas fa-check';
+//             submitBtn.style.background = 'var(--accent-color)';
+            
+//             // Reset form
+//             contactForm.reset();
+            
+//             // Show success message
+//             showNotification('Thank you! Your message has been sent successfully.', 'success');
+            
+//         } catch (error) {
+//             // Error state
+//             btnText.textContent = 'Failed to Send';
+//             btnIcon.className = 'fas fa-exclamation-triangle';
+//             submitBtn.style.background = '#ef4444';
+            
+//             showNotification('Sorry, there was an error sending your message. Please try again.', 'error');
+//         }
+        
+//         // Reset button after 3 seconds
+//         setTimeout(() => {
+//             submitBtn.classList.remove('loading');
+//             btnText.textContent = 'Send Message';
+//             btnIcon.className = 'fas fa-paper-plane';
+//             submitBtn.style.background = '';
+//         }, 3000);
+//     });
+    
+//     // Form validation
+//     const inputs = contactForm.querySelectorAll('input, textarea');
+//     inputs.forEach(input => {
+//         input.addEventListener('blur', validateInput);
+//         input.addEventListener('input', clearValidation);
+//     });
+    
+//     function validateInput(e) {
+//         const input = e.target;
+//         const value = input.value.trim();
+        
+//         // Remove existing validation classes
+//         input.classList.remove('valid', 'invalid');
+        
+//         // Validate based on input type
+//         let isValid = false;
+        
+//         switch (input.type) {
+//             case 'email':
+//                 isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+//                 break;
+//             case 'text':
+//                 isValid = value.length >= 2;
+//                 break;
+//             default:
+//                 isValid = value.length >= 5;
+//         }
+        
+//         input.classList.add(isValid ? 'valid' : 'invalid');
+//     }
+    
+//     function clearValidation(e) {
+//         e.target.classList.remove('valid', 'invalid');
+//     }
+    
+//     // Simulate form submission (replace with actual API call)
+//     function simulateFormSubmission() {
+//         return new Promise((resolve, reject) => {
+//             setTimeout(() => {
+//                 // Simulate success (90% success rate)
+//                 if (Math.random() > 0.1) {
+//                     resolve();
+//                 } else {
+//                     reject(new Error('Simulated error'));
+//                 }
+//             }, 2000);
+//         });
+//     }
+// }
+
+// Contact form functionality (real Formspree integration)
 function initContactForm() {
     const contactForm = document.getElementById('contact-form');
-    
+    if (!contactForm) return; // Safety check
+
     contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const submitBtn = contactForm.querySelector('button[type="submit"]');
         const btnText = submitBtn.querySelector('.btn-text');
         const btnIcon = submitBtn.querySelector('i');
-        
+
         // Show loading state
         submitBtn.classList.add('loading');
         btnText.textContent = 'Sending...';
         btnIcon.className = 'fas fa-spinner fa-spin';
-        
-        // Simulate form submission (replace with actual form handling)
+
         try {
-            await simulateFormSubmission();
-            
-            // Success state
-            btnText.textContent = 'Message Sent!';
-            btnIcon.className = 'fas fa-check';
-            submitBtn.style.background = 'var(--accent-color)';
-            
-            // Reset form
-            contactForm.reset();
-            
-            // Show success message
-            showNotification('Thank you! Your message has been sent successfully.', 'success');
-            
+            // ✅ Send actual form data to Formspree
+            const response = await fetch("https://formspree.io/f/mldpoypb", {
+                method: "POST",
+                body: new FormData(contactForm),
+                headers: { "Accept": "application/json" },
+            });
+
+            if (response.ok) {
+                // ✅ Success state
+                btnText.textContent = 'Message Sent!';
+                btnIcon.className = 'fas fa-check';
+                submitBtn.style.background = 'var(--accent-color)';
+                contactForm.reset();
+                showNotification('Thank you! Your message has been sent successfully.', 'success');
+            } else {
+                throw new Error("Form submission failed");
+            }
+
         } catch (error) {
-            // Error state
+            // ❌ Error state
+            console.error("Form submission error:", error);
             btnText.textContent = 'Failed to Send';
             btnIcon.className = 'fas fa-exclamation-triangle';
             submitBtn.style.background = '#ef4444';
-            
             showNotification('Sorry, there was an error sending your message. Please try again.', 'error');
         }
-        
-        // Reset button after 3 seconds
+
+        // Reset button to default state after 3 seconds
         setTimeout(() => {
             submitBtn.classList.remove('loading');
             btnText.textContent = 'Send Message';
@@ -256,24 +361,21 @@ function initContactForm() {
             submitBtn.style.background = '';
         }, 3000);
     });
-    
-    // Form validation
+
+    // --- Input validation logic ---
     const inputs = contactForm.querySelectorAll('input, textarea');
     inputs.forEach(input => {
         input.addEventListener('blur', validateInput);
         input.addEventListener('input', clearValidation);
     });
-    
+
     function validateInput(e) {
         const input = e.target;
         const value = input.value.trim();
-        
-        // Remove existing validation classes
+
         input.classList.remove('valid', 'invalid');
-        
-        // Validate based on input type
+
         let isValid = false;
-        
         switch (input.type) {
             case 'email':
                 isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -284,28 +386,15 @@ function initContactForm() {
             default:
                 isValid = value.length >= 5;
         }
-        
+
         input.classList.add(isValid ? 'valid' : 'invalid');
     }
-    
+
     function clearValidation(e) {
         e.target.classList.remove('valid', 'invalid');
     }
-    
-    // Simulate form submission (replace with actual API call)
-    function simulateFormSubmission() {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Simulate success (90% success rate)
-                if (Math.random() > 0.1) {
-                    resolve();
-                } else {
-                    reject(new Error('Simulated error'));
-                }
-            }, 2000);
-        });
-    }
 }
+
 
 // Smooth scrolling for navigation links
 function initSmoothScrolling() {
